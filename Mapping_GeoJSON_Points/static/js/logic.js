@@ -4,36 +4,18 @@ console.log("working");
 // Create the map object with a center at Earth
 var map = L.map("mapid").setView([30, 30], 2);
 
-// Add GeoJSON data.
-let sanFranAirport =
-{"type":"FeatureCollection","features":[{
-    "type":"Feature",
-    "properties":{
-        "id":"3469",
-        "name":"San Francisco International Airport",
-        "city":"San Francisco",
-        "country":"United States",
-        "faa":"SFO",
-        "icao":"KSFO",
-        "alt":"13",
-        "tz-offset":"-8",
-        "dst":"A",
-        "tz":"America/Los_Angeles"},
-        "geometry":{
-            "type":"Point",
-            "coordinates":[-122.375,37.61899948120117]}}
-]};
-// plot the San Fran Airport with L.geoJSON
-L.geoJSON(sanFranAirport, {
-    // turn each feature to a marker
-    onEachFeature: function(feature, layer) {
-        console.log(layer);
-        layer.bindPopup(`<h2>${feature.properties.faa}<h2> <hr> 
-        <h4>${feature.properties.name}`)
-    }
-})
-// .bindPopup(`<h1>${sanFranAirport.features[0].properties.name}</h1>`)
-.addTo(map);
+
+// // plot the San Fran Airport with L.geoJSON
+// L.geoJSON(sanFranAirport, {
+//     // turn each feature to a marker
+//     onEachFeature: function(feature, layer) {
+//         console.log(layer);
+//         layer.bindPopup(`<h2>${feature.properties.faa}<h2> <hr> 
+//         <h4>${feature.properties.name}`)
+//     }
+// })
+// // .bindPopup(`<h1>${sanFranAirport.features[0].properties.name}</h1>`)
+// .addTo(map);
 // Get cities data from cities.js.
 // let cityData = cities;
 
@@ -57,3 +39,16 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
     id: 'mapbox/streets-v11',
     accessToken: API_KEY
 }).addTo(map);
+
+// Add GeoJSON data from github.
+let airportData = "https://raw.githubusercontent.com/mhertel278/Mapping_Earthquakes/Mapping_GeoJSON_Points/majorAirports.json"
+
+// Grabbing the GeoJSON data
+d3.json(airportData).then(function(data) {
+    console.log(data);
+    L.geoJSON(data, {
+        onEachFeature: function(feature, layer) {
+            layer.bindPopup(`<h1>Airport Code: ${feature.properties.faa}</h1> <hr> <h4>${feature.properties.name}`)
+        }
+    }).addTo(map)
+})
