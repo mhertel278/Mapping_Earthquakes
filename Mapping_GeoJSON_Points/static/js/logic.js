@@ -1,8 +1,8 @@
 // console.log to check the code is working
 console.log("working");
 
-// Create the map object with a center at Earth
-var map = L.map("mapid").setView([30, 30], 2);
+// // Create the map object with a center at Earth
+// var map = L.map("mapid").setView([30, 30], 2);
 
 
 // // plot the San Fran Airport with L.geoJSON
@@ -38,8 +38,28 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
     maxZoom: 18,
     id: 'mapbox/streets-v11',
     accessToken: API_KEY
-}).addTo(map);
+});
 
+// Create a second tile layer that will can be toggled to
+var dark = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/dark-v10',
+    accessToken: API_KEY
+});
+
+// create base layer variable
+let baseMaps = {
+    Street: streets,
+    Dark: dark
+};
+
+// Create map object with center, zoom level, and default layer
+let map = L.map('mapid', {
+    center: [30,30],
+    zoom: 2,
+    layers: [streets]
+})
 // Add GeoJSON data from github.
 let airportData = "https://raw.githubusercontent.com/mhertel278/Mapping_Earthquakes/Mapping_GeoJSON_Points/majorAirports.json"
 
@@ -52,3 +72,5 @@ d3.json(airportData).then(function(data) {
         }
     }).addTo(map)
 })
+// Pass map layers to the layer control and add it to the map
+L.control.layers(baseMaps).addTo(map);
