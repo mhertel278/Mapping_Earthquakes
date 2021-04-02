@@ -1,8 +1,8 @@
 // console.log to check the code is working
 console.log("working");
 
-// Create the map object with a center at San Francisco Airport and zoom level
-var map = L.map("mapid").setView([37.5, -122.5], 10);
+// Create the map object with a center at Earth
+var map = L.map("mapid").setView([30, 30], 2);
 
 // Add GeoJSON data.
 let sanFranAirport =
