@@ -33,43 +33,52 @@ console.log("working");
 // })
 
 // Create the tile layer that will be the background of the map
-var streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+var day = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
-    id: 'mapbox/streets-v11',
+    id: 'mapbox/navigation-preview-day-v2',
     accessToken: API_KEY
 });
 
-// Create a second tile layer that will can be toggled to
-var dark = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+// Create a dark tile layer that will be the default background
+var night = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
-    id: 'mapbox/dark-v10',
+    id: 'mapbox/navigation-preview-night-v2',
     accessToken: API_KEY
 });
 
 // create base layer variable
 let baseMaps = {
-    Street: streets,
-    Dark: dark
+    "Day Navigation": day,
+    "Night Navigation": night
 };
 
 // Create map object with center, zoom level, and default layer
 let map = L.map('mapid', {
-    center: [30,30],
+    center: [44.0, -80.0],
     zoom: 2,
-    layers: [streets]
+    // set dark layer as default
+    layers: [night]
 })
 // Add GeoJSON data from github.
-let airportData = "https://raw.githubusercontent.com/mhertel278/Mapping_Earthquakes/Mapping_GeoJSON_Points/majorAirports.json"
+let torontoRoutesData = "https://raw.githubusercontent.com/mhertel278/Mapping_Earthquakes/Mapping_GeoJSON_Linestrings/torontoRoutes.json"
 
-// Grabbing the GeoJSON data
-d3.json(airportData).then(function(data) {
+// create style object for the map style
+let myStyle = {
+    color: "#ffffa1",
+    weight: 2
+}
+// grabbing the GeoJSON data
+d3.json(torontoRoutesData).then(function(data) {
     console.log(data);
     L.geoJSON(data, {
+        style: myStyle,
         onEachFeature: function(feature, layer) {
-            layer.bindPopup(`<h1>Airport Code: ${feature.properties.faa}</h1> <hr> <h4>${feature.properties.name}`)
+            console.log(feature);
+            layer.bindPopup(`<h1>Airline Code: ${feature.properties.arline}</h1> <hr> <h4>Destination:      ${feature.properties.dst}`)
         }
+        
     }).addTo(map)
 })
 // Pass map layers to the layer control and add it to the map
